@@ -26,4 +26,14 @@ class BST{
         nodo *root;
     public:
         BST();
+        ~BST() = default;
+        bool insert(vector<int> ip);
+};
+
+class bitacora{
+    private:
+        BST arbol;
+    public:
+        bitacora();
+        ~bitacora() = default;
 };
