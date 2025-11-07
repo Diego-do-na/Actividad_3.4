@@ -12,7 +12,11 @@ struct nodo{
         this->izq = izq;
         this->der = der;
     };
-    nodo(vector<int> ip): nodo(ip, nullptr, nullptr){};
+    nodo(vector<int> ip){
+        this->ip = ip;
+        this->izq = nullptr;
+        this->der = nullptr;
+    };
     ~nodo();
 };
 
@@ -22,5 +26,4 @@ class BST{
         nodo *root;
     public:
         BST();
-        ~BST();
 };
