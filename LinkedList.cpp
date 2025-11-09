@@ -26,3 +26,11 @@ void LinkedList::insertLast(vector<int> data) {
     }
     size++;
 }
+
+nodo* LinkedList::getHead() {
+    return this -> head;
+}
+
+nodo* LinkedList::getTail() {
+    return this -> tail;
+}

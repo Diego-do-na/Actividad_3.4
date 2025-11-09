@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-struct nodo {
+struct nodo{
     vector<int> ip;
     nodo* next;
     nodo(vector<int> ip, nodo* next) {
@@ -15,10 +15,12 @@ struct nodo {
 
 class LinkedList {
     public:
-        int size;
         nodo* head;
         nodo* tail;
+        int size;
         LinkedList();
         void insertFirst(vector<int> data);
         void insertLast(vector<int> data);
+        nodo* getHead();
+        nodo* getTail();
 };
