@@ -1,38 +1,33 @@
 #include "bitacora.h"
 
-BST::BST(){
-    this->size = 0;
-    this->root = nullptr;
-}
+bitacora::bitacora(vector<string> l) {
+    lineas_iniciales = l;
 
-bool BST::insert(vector<int> ip){
-    nodeBST *nuevo = new MyNodeBST(ip);
-    if (this -> root == nullptr){
-        this -> root = nuevo;
-        this -> size++;
-        return true;
-    }
-    MyNodeBST *current = this -> root;
-    while (current != nullptr){
-        if (data == current -> valor){
-            delete nuevo;
-            return false;
-        }
-        else if (data < current -> valor){
-            if (current -> izq == nullptr){
-                current -> izq = nuevo;
-                this -> size++;
-                return true;
+    for (int c = 0; c < l.size(); ++c) {
+        string linea = l[c];
+        string ip_string = linea.substr(15, linea.find(" ", 16) - 16);
+        vector<int> ip_vector;
+        string temp;
+
+        for (char ch : ip_string) {
+            if (ch == '.' || ch == ':') {
+                ip_vector.push_back(stoi(temp));
+                temp.clear();
+            } else {
+                temp += ch;
             }
-            current = current -> izq;
         }
-        else{
-            if (current -> der == nullptr){
-                current -> der = nuevo;
-                this -> size++;
-                return true;
-            }
-            current = current -> der;
+
+        if (!temp.empty()) {
+            ip_vector.push_back(stoi(temp));
+        }
+
+        ip_vector.push_back(c);
+
+        if (c == 0) {
+            lista_ips.insertFirst(ip_vector);
+        } else {
+            lista_ips.insertLast(ip_vector);
         }
     }
 }
