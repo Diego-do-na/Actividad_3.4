@@ -8,7 +8,7 @@ using namespace std;
 int main() {
     vector<string> lineas;
     string linea;
-    ifstream archivoEntrada("bitacora.txt");
+    ifstream archivoEntrada("bitacora2.txt");
 
     if (!archivoEntrada.is_open()) {
         cout << "No se pudo abrir el archivo bitacora.txt" << endl;

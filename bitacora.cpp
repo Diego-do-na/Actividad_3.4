@@ -17,11 +17,13 @@ Bitacora::Bitacora(vector<string> l) {
             if (ch == '.') {
                 ip_vector.push_back(stoi(temp));
                 temp.clear();
-            } else if (ch == ':') {
+            } 
+            else if (ch == ':') {
                 ip_vector.push_back(stoi(temp));
                 temp.clear();
                 break;
-            } else {
+            } 
+            else {
                 temp += ch;
             }
         }
@@ -31,9 +33,7 @@ Bitacora::Bitacora(vector<string> l) {
         }
 
         ip_vector.push_back(c);
-
-        if (c == 0) lista_ips.insertFirst(ip_vector);
-        else lista_ips.insertLast(ip_vector);
+        lista_ips.insertLast(ip_vector);
     }
 }
 
@@ -49,96 +49,114 @@ void Bitacora::crear_archivo(const LinkedList& lista) {
             current = current->next;
         }
         archivo.close();
-    } else {
+    } 
+    else {
         cout << "No se pudo crear el archivo." << endl;
     }
 }
 
 // Ordenar la LinkedList
 void Bitacora::ordenar_ll() {
-    lista_ordenada = mergeSort(lista_ips);
+    lista_ordenada.head = mergeSort(lista_ips.head, lista_ips.size);
+    lista_ordenada.size = lista_ips.size;
+    lista_ordenada.tail = lista_ordenada.head;
+    if (lista_ordenada.tail) {
+        while (lista_ordenada.tail->next) {
+            lista_ordenada.tail = lista_ordenada.tail->next;
+        }
+    }
     crear_archivo(lista_ordenada);
 }
 
+bool Bitacora::comparar_nodo(nodo* a, nodo* b) {
+    for (int i = 0; i < 4; i++) {
+        if (a->ip[i] < b->ip[i]) {
+            return true;
+        }
+        if (a->ip[i] > b->ip[i]) {
+            return false;
+        }
+    }
+    return a->ip[4] <= b->ip[4];
+}
+
 // MergeSort de la LinkedList
-LinkedList Bitacora::merge(nodo* izq, nodo* der) {
-    LinkedList resultado;
-    while (izq != nullptr && der != nullptr) {
-        if (ipMenoroIgual(izq->ip, der->ip)) {
-            resultado.insertLast(izq->ip);
+nodo* Bitacora::merge(nodo* izq, nodo* der) {
+    if (!izq) return der;
+    if (!der) return izq;
+
+    nodo* head = nullptr;
+    nodo* tail = nullptr;
+
+    while (izq && der) {
+        nodo* siguiente;
+        if (comparar_nodo(izq, der)) {
+            siguiente = izq;
             izq = izq->next;
         } else {
-            resultado.insertLast(der->ip);
+            siguiente = der;
             der = der->next;
+        }
+
+        if (!head) {
+            head = siguiente;
+            tail = siguiente;
+        } else {
+            tail->next = siguiente;
+            tail = siguiente;
         }
     }
 
-    while (izq != nullptr) {
-        resultado.insertLast(izq->ip);
-        izq = izq->next;
+    if (izq) {
+        if (!tail) head = izq;
+        else tail->next = izq;
+    } else if (der) {
+        if (!tail) head = der;
+        else tail->next = der;
     }
-    while (der != nullptr) {
-        resultado.insertLast(der->ip);
-        der = der->next;
-    }
-    return resultado;
+
+    return head;
 }
 
-LinkedList Bitacora::mergeSort(const LinkedList& lista) {
-    nodo* head = lista.head;
-    if (head == nullptr || head->next == nullptr) return lista;
+nodo* Bitacora::mergeSort(nodo* head, int size) {
+    if (size <= 1) return head;
 
-    nodo* slow = head;
-    nodo* fast = head->next;
-    while (fast != nullptr && fast->next != nullptr) {
-        slow = slow->next;
-        fast = fast->next->next;
+    int mitad = size / 2;
+    nodo* temp = head;
+    for (int i = 1; i < mitad; i++) {
+        temp = temp->next;
     }
 
-    nodo* mid = slow->next;
-    slow->next = nullptr;
+    nodo* mid = temp->next;
+    temp->next = nullptr;
 
-    LinkedList left, right;
-    left.insertFirst(head->ip);
-    right.insertFirst(mid->ip);
+    nodo* izq = mergeSort(head, mitad);
+    nodo* der = mergeSort(mid, size - mitad);
 
-    LinkedList izq_ordenada = mergeSort(left);
-    LinkedList der_ordenada = mergeSort(right);
-
-    return merge(izq_ordenada.getHead(), der_ordenada.getHead());
-}
-
-bool Bitacora::ipMenoroIgual(vector<int> a, vector<int> b) {
-    for (int i = 0; i < 4; i++) {
-        if (a[i] < b[i]) return true;
-        if (a[i] > b[i]) return false;
-    }
-    return true;
-}
-
-bool Bitacora::ipMayoroIgual(vector<int> a, vector<int> b) {
-    for (int i = 0; i < 4; i++) {
-        if (a[i] > b[i]) return true;
-        if (a[i] < b[i]) return false;
-    }
-    return true;
+    return merge(izq, der);
 }
 
 // Crear el árbol de frecuencias
 void Bitacora::crear_bst() {
-    nodo* current = lista_ordenada.getHead();
+    nodo* current = lista_ordenada.head;
     while (current != nullptr) {
-        if (current->next != nullptr && current->ip == current->next->ip) {
+        if (current->next != nullptr && comparar_ip(current->ip, current->next->ip)) {
             contadorBusqueda++;
             current = current->next;
         } else {
-            ip_str = to_string(current->ip[0]) + "." + to_string(current->ip[1]) + "." +
-                     to_string(current->ip[2]) + "." + to_string(current->ip[3]);
+            ip_str = to_string(current->ip[0]) + "." + to_string(current->ip[1]) + "." + to_string(current->ip[2]) + "." + to_string(current->ip[3]);
             arbol_frecuencia.insertar(ip_str, contadorBusqueda);
             contadorBusqueda = 1;
             current = current->next;
         }
     }
+}
+
+bool Bitacora::comparar_ip(vector<int> a, vector<int> b) {
+    for (int i = 0; i < 4; i++) {
+        if (a[i] != b[i]) return false;
+    }
+    return true;
 }
 
 void Bitacora::imprimir_ips() {

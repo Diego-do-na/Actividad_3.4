@@ -14,20 +14,18 @@ class Bitacora {
         LinkedList lista_ordenada;
         BST arbol_frecuencia;
     public:
-        // Constructor
-        Bitacora(vector<string> l);
-
         // Métodos principales
+        Bitacora(vector<string> l);
         void crear_archivo(const LinkedList& lista);
         void imprimir_ips();
 
-        // Métodos auxiliares de LinkedList
-        bool ipMenoroIgual(vector<int> a, vector<int> b);
-        bool ipMayoroIgual(vector<int> a, vector<int> b);
-        LinkedList merge(nodo* izq, nodo* der);
-        LinkedList mergeSort(const LinkedList& lista);
+        // Métodos de la linked list
+        nodo* merge(nodo* izq, nodo* der);
+        nodo* mergeSort(nodo* head, int size);
+        bool comparar_nodo(nodo* a, nodo* b);
         void ordenar_ll();
 
         // Métodos del BST
         void crear_bst();
+        bool comparar_ip(vector<int> a, vector<int> b);
 };
